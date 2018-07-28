@@ -14,6 +14,7 @@ export default class MapContainer extends Component {
         ],
         markers: [],
         query: '',
+        // globally declared the infoWindow
         infoWindow: new this.props.google.maps.InfoWindow()
     }
 
@@ -41,6 +42,8 @@ export default class MapContainer extends Component {
 
   viewMarkers = () => {
     const {google} = this.props
+    // adding borders for all markers to be displayed on the map
+    const borders = new google.maps.LatLngBounds();
     let {infoWindow} = this.state
 
     this.state.locations.forEach( (place, index) => {
@@ -52,13 +55,13 @@ export default class MapContainer extends Component {
             title: place.name,
             map: this.map
         });
-        marker.addListener('click', () => {
-            this.populateInfoWindow(marker, infoWindow)
-        })
+
         this.setState((state) => ({
             markers: [...state.markers, marker]
         }))
+        borders.extend(marker.position)
     });
+    this.map.fitBounds(borders)
     }
 
 
