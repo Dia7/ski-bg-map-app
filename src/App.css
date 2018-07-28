@@ -36,3 +36,16 @@ body {
   height: 30px;
   cursor: pointer;
 }
+
+.theMap {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.map-container {
+  display: flex;
+  flex-wrap: wrap;
+  height: 700px;
+  width: 80%;
+}
