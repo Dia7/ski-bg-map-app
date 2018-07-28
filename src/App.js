@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import {GoogleApiWrapper} from 'google-maps-react';
-// import logo from './logo.svg';
+import { GoogleApiWrapper } from 'google-maps-react'
 import './App.css';
 import MapContainer from './MapContainer.js'
 
@@ -12,7 +11,7 @@ class App extends Component {
     return (
       <div>
         <a className="menu" tabIndex="0">
-          <img className="hamburger-icon" src={ HamburgerIcon } alt="hamburger icon" />
+          <img className="hamburger-icon" src={ HamburgerIcon } alt="hamburger" />
         </a>
         <h1 className="main-heading">Skiing in Bulgaria</h1>
         <MapContainer google={this.props.google} />
@@ -22,5 +21,5 @@ class App extends Component {
 }
 
 export default GoogleApiWrapper({
-  apiKey: 'AIzaSyBAb5_qqBZX1qH5l_yK7uqLXpLifSdgQ34 '
-})(MapContainer)
+  apiKey: 'AIzaSyBAb5_qqBZX1qH5l_yK7uqLXpLifSdgQ34'
+})(App)
