@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { GoogleApiWrapper } from 'google-maps-react'
+import {Map, InfoWindow, Marker, GoogleApiWrapper} from 'google-maps-react';
 import './App.css';
-import MapContainer from './MapContainer.js'
+import MapContainer from './components/MapContainer.js'
 
 // import images
 import HamburgerIcon from './assets/hamburger_icon.png'
