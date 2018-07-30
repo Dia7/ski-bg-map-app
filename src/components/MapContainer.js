@@ -5,50 +5,7 @@ import ReactDOM from 'react-dom'
 export default class MapContainer extends Component {
 
     state = {
-        locations: [
-            {
-                name: "Borovetz",
-                location: {lat: 42.270667, lng: 23.605616}
-            },
-            {
-                name: "Bezbog",
-                location: {lat: 41.733941, lng: 23.524224}
-            },
-            {
-                name: "Bansko",
-                location: {lat: 41.824869, lng: 23.478921}
-            },
-            {
-                name: "Malyovitsa",
-                location: {lat: 42.166667, lng: 23.366667}
-            },
-            {
-                name: "7_Rilski_Lakes",
-                location: {lat: 42.202778, lng: 23.32}
-            },
-            {
-                name: "Panichishte",
-                location: {lat: 42.263425, lng: 23.296852}
-            },
-            {
-                name: "Semkovo",
-                location: {lat: 42.046394, lng: 23.534161}
-            },
-            {
-                name: "Kulinoto",
-                location: {lat: 41.865885, lng: 23.344038}
-            },
-            {
-                name: "Kamenitza",
-                location: {lat: 41.768523, lng: 23.426883}
-            },
-            {
-                name: "Kartala",
-                location: {lat: 42.043117, lng: 23.360738},
-                id: '4d6a1ed71b63a1cd2db0482d',
-                description: 'bla'
-            },
-        ],
+        locations: require('./Locations.json'),
         markers: [],
         query: '',
         // globally declared the infoWindow
@@ -78,10 +35,13 @@ export default class MapContainer extends Component {
 
       this.map = new google.maps.Map(node, mapConfig)
       this.viewMarkers()
+        }
     }
-  }
 
-
+    // track what the User is typyng
+    changeValue = (element) => {
+        this.setState({query: element.target.value})
+    }
 
     viewMarkers = () => {
     const {google} = this.props
@@ -133,30 +93,56 @@ export default class MapContainer extends Component {
     }
 
     changeLocation = () => {
-    const {infowindow} = this.state
-     const displayInfowindow = (element) => {
-      const {markers} = this.state
-      const markerInd = markers.findIndex(marker => marker.title === element.target.innerText)
-      this.populateInfoWindow(markers[markerInd], infowindow)
+        const {infowindow} = this.state
+        const displayInfowindow = (element) => {
+        const {markers} = this.state
+        const markerIndex = markers.findIndex(marker => marker.title.toLowerCase() === element.target.innerText.toLowerCase())
+        this.populateInfoWindow(markers[markerIndex], infowindow)
     }
+
     document.querySelector('.allPlaces').addEventListener('click', function (element) {
       if(element.target.nodeName === "LI") {
         displayInfowindow(element)
-      }
+        }
     })
-  }
+    }
 
     render() {
-        const {markers} = this.state
+        const { locations, query, markers, infowindow} = this.state
+            if (query) {
+            locations.forEach((loc,i) => {
+                // if the location contain what the user is typing
+                if(loc.name.toLowerCase().includes(query.toLowerCase())) {
+                  //set visible markers
+                    markers[i].setVisible(true)
+                }else {
+                    if (infowindow.markers === markers[i]){
+                        // if the info window was already open on the marker - close the info window
+                        infowindow.close()
+                    }
+                    // if the location doesn't match - set the markers - not visible
+                    markers[i].setVisible(false)
+                }
+            })
+            }else {
+              locations.forEach((i) => {
+                if (markers.length && markers[i]) {
+                  markers[i].setVisible(true)
+            }
+        })
+    }
         return (
             <div>
                 <div className="map-container">
                     <div className="sidebar search">
+                        <input type="text"
+                            role="search"
+                            value={this.state.value}
+                            onChange={this.changeValue}
+                        />
                         <ul className="allPlaces">
-                           {
-                            markers.map((mark, index) =>
-                                (<li key={index}>{mark.title}</li>))
-                            }
+                            {markers.filter(m => m.getVisible()).map((m, i) => (
+                                <li key={i}>{m.title}</li>))}
                         </ul>
                     </div>
                     <div className="theMap" role="application" ref="map">
