@@ -52,11 +52,12 @@ export default class MapContainer extends Component {
         markers: [],
         query: '',
         // globally declared the infoWindow
-        infoWindow: new this.props.google.maps.InfoWindow({maxWidth: 200})
+        infowindow: new this.props.google.maps.InfoWindow({maxWidth: 200})
     }
 
     componentDidMount () {
         this.mapLoad()
+        this.changeLocation()
     }
 
     mapLoad() {
@@ -67,9 +68,12 @@ export default class MapContainer extends Component {
       const node = ReactDOM.findDOMNode(mapRef)
 
       const mapConfig = Object.assign({}, {
+
         center: {lat: 41.968877, lng: 23.477193},
         zoom: 10,
-        mapTypeId: 'terrain'
+        mapTypeId: 'terrain',
+        styles: require('./MapStyles.json')
+
       })
 
       this.map = new google.maps.Map(node, mapConfig)
@@ -77,13 +81,15 @@ export default class MapContainer extends Component {
     }
   }
 
-  viewMarkers = () => {
+
+
+    viewMarkers = () => {
     const {google} = this.props
     // adding borders for all markers to be displayed on the map
     const borders = new google.maps.LatLngBounds();
-    let {infoWindow} = this.state
+    let {infowindow} = this.state
 
-    this.state.locations.forEach( (place, index) => {
+    this.state.locations.forEach( (place) => {
         const marker = new google.maps.Marker({
             position: {
                 lat: place.location.lat,
@@ -93,9 +99,9 @@ export default class MapContainer extends Component {
             animation: google.maps.Animation.DROP,
             map: this.map
         });
-        // on click set the current infoWindow of the marker
+        // on click update the infoWindow with the current marker
         marker.addListener('click', () => {
-            this.populateInfoWindow(marker, infoWindow)
+            this.populateInfoWindow(marker, infowindow)
         })
         this.setState((state) => ({
             markers: [...state.markers, marker]
@@ -116,9 +122,9 @@ export default class MapContainer extends Component {
         }, 1000);
 
         if(infowindow.marker !== marker) {
-            // is infowindow not already open on that current maarker
+            // is infowindow not already open on that current marker
             infowindow.marker = marker;
-            infowindow.setContent(`<h4>Location</h4><p>Bla bla</p>`);
+            infowindow.setContent(`<h4>${marker.title}</h4><p>Bla bla</p>`);
             infowindow.addListener('closeInfo', function() {
                 infowindow.marker = null;
             })
@@ -126,11 +132,33 @@ export default class MapContainer extends Component {
         }
     }
 
+    changeLocation = () => {
+    const {infowindow} = this.state
+     const displayInfowindow = (element) => {
+      const {markers} = this.state
+      const markerInd = markers.findIndex(marker => marker.title === element.target.innerText)
+      this.populateInfoWindow(markers[markerInd], infowindow)
+    }
+    document.querySelector('.allPlaces').addEventListener('click', function (element) {
+      if(element.target.nodeName === "LI") {
+        displayInfowindow(element)
+      }
+    })
+  }
+
     render() {
+        const {markers} = this.state
         return (
             <div>
                 <div className="map-container">
-                    <div className="sidebar"></div>
+                    <div className="sidebar search">
+                        <ul className="allPlaces">
+                           {
+                            markers.map((mark, index) =>
+                                (<li key={index}>{mark.title}</li>))
+                            }
+                        </ul>
+                    </div>
                     <div className="theMap" role="application" ref="map">
                     Loading..
                     </div>
