@@ -62,7 +62,7 @@ export default class MapContainer extends Component {
         query: '',
         keys: require('./keys.json'), //json file containing the api keys
         // globally declared the infoWindow
-        infowindow: new this.props.google.maps.InfoWindow({maxWidth: 250})
+        infowindow: new this.props.google.maps.InfoWindow({maxWidth: 250}),
     }
 
     componentDidMount () {
@@ -80,8 +80,8 @@ export default class MapContainer extends Component {
       const mapConfig = Object.assign({}, {
 
         center: {lat: 41.968877, lng: 23.477193},
-        zoom: 10,
         mapTypeId: 'terrain',
+        zoom: 10,
         styles: require('./MapStyles.json')
 
       })
@@ -98,6 +98,23 @@ export default class MapContainer extends Component {
 
     viewMarkers = () => {
     const {google} = this.props
+
+    // creates a new marker icon with given color.
+       let makeMarkerIcon = (markerColor) => {
+        const {google} = this.props
+        let markerImage = new google.maps.MarkerImage(
+          'http://chart.googleapis.com/chart?chst=d_map_spin&chld=1.15|0|'+ markerColor +
+          '|40|_|%E2%80%A2',
+          new google.maps.Size(22, 34),
+          new google.maps.Point(0, 0),
+          new google.maps.Point(10, 34),
+          new google.maps.Size(21,34));
+        return markerImage;
+      }
+    // style the markers
+    let defaultIcon = makeMarkerIcon('65FFE4')
+    let highlightIcon = makeMarkerIcon('004C3F')
+
     // adding borders for all markers to be displayed on the map
     const borders = new google.maps.LatLngBounds();
     let {infowindow} = this.state
@@ -111,6 +128,7 @@ export default class MapContainer extends Component {
             title: place.name,
             photo: '',
             id: place.id,
+            icon: defaultIcon,
             animation: google.maps.Animation.DROP,
             map: this.map
         });
@@ -118,6 +136,15 @@ export default class MapContainer extends Component {
         marker.addListener('click', () => {
             this.populateInfoWindow(marker, infowindow)
         })
+
+        // change the colors of the markers on hover
+        marker.addListener('mouseover', function() {
+          this.setIcon(highlightIcon);
+        });
+        marker.addListener('mouseout', function() {
+          this.setIcon(defaultIcon);
+        });
+
         this.setState((state) => ({
             markers: [...state.markers, marker]
         }))
@@ -126,21 +153,30 @@ export default class MapContainer extends Component {
     this.map.fitBounds(borders)
     }
 
+    // fill the infowindow with dynamic content
     populateInfoWindow(marker, infowindow){
 
         const {google} = this.props
+
+        const {markers} = this.state
 
         //bounce when marker or listitems are clicked
         marker.setAnimation(google.maps.Animation.BOUNCE);
         setTimeout(function() {
             marker.setAnimation(null);
         }, 1000);
-
+        // if infowindow is not open on that marker
         if(infowindow.marker !== marker) {
-            // is infowindow not already open on that current marker
-            infowindow.marker = marker;
+        //     // reset the previous marker color
+            infowindow.marker = marker
+        //     if(infowindow.marker) {
+        //         const index = markers.findIndex(mark => mark.title === infowindow.marker.title)
+        //         markers[index].setIcon(defaultIcon)
+        //     }
+        //     // when the marker is clicked - change color
+        //     marker.setIcon(highlightIcon)
 
-            //set the content of the info window from four square API
+            //set the content of the info window from Foursquare API
             this.foursquareContent(marker, infowindow);
             // infowindow.setContent(`<h4>${marker.title}</h4><p>Bla bla</p>`);
             infowindow.setContent('');
@@ -159,7 +195,6 @@ export default class MapContainer extends Component {
     &client_secret=${this.state.keys.ClientSecret}` +
     `&ll=` + marker.getPosition().lat() +`,` + marker.getPosition().lng() +
     `&v=20180527`;
-
 
     //fetch the request using fitch API
     fetch(request)
@@ -202,7 +237,7 @@ export default class MapContainer extends Component {
 
 
         infowindow.setContent(`<p><strong>Title: </strong>${name}</p>
-                <img src="+marker.photo+">
+
                 <p><strong>Address: </strong>${formattedAddress}</p>
                 <a href=${foursquareUrl}>Location on Foursquare</a>
                 `);
@@ -211,6 +246,7 @@ export default class MapContainer extends Component {
       console.log(exception);
     })
     }
+
 
 
     changeLocation = () => {
@@ -227,6 +263,7 @@ export default class MapContainer extends Component {
         }
     })
     }
+
 
     render() {
         const { locations, query, markers, infowindow} = this.state
@@ -262,8 +299,8 @@ export default class MapContainer extends Component {
                             onChange={this.changeValue}
                         />
                         <ul className="allPlaces">
-                            {markers.filter(m => m.getVisible()).map((m, i) => (
-                                <li key={i}>{m.title}</li>))}
+                            {markers.filter(mark => mark.getVisible()).map((mark, ind) => (
+                                <li key={ind}>{mark.title}</li>))}
                         </ul>
                     </div>
                     <div className="theMap" role="application" ref="map">
