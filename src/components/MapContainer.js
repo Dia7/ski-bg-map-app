@@ -1,21 +1,21 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom'
-
+import Attribution from '../assets/attribution.png'
 
 
 export default class MapContainer extends Component {
 
     state = {
-          locations: [
+         locations: [
         {
             name: "Borovetz",
-            location: {lat: 42.270667, lng: 23.605616},
-            id: '5997070d6a60717704801060'
+            location: {lat: 42.2200176, lng: 23.5809266},
+            id: '4e1d712415207c4cbec540bd'
         },
         {
-            name: "Bezbog",
-            location: {lat: 41.733941, lng: 23.524224},
-            id: '4e1d712415207c4cbec540bd'
+            name: "Dobrinishte",
+            location: {lat: 41.750346, lng: 23.541151},
+            id: '4f5c84b0e4b053fd68af33c6'
         },
         {
             name: "Bansko",
@@ -24,43 +24,29 @@ export default class MapContainer extends Component {
         },
         {
             name: "Malyovitsa",
-            location: {lat: 42.166667, lng: 23.366667},
+            location: {lat: 42.1887717, lng: 23.3740841},
             id: '4cc2f7d2c844721e0bd1df01'
         },
         {
-            name: "7_Rilski_Lakes",
-            location: {lat: 42.202778, lng: 23.32},
-            id: '4c4187fdda3dc9283609c9b9'
+            name: "7 Rilski Lakes",
+            location: {lat: 42.2402517, lng: 23.3259033},
+            id: '4e6c66248877ce9597f8c0ff'
         },
         {
             name: "Panichishte",
-            location: {lat: 42.263425, lng: 23.296852},
-            id: '4f33c8a9a17c3e7317e5f33f'
-        },
-        {
-            name: "Semkovo",
-            location: {lat: 42.046394, lng: 23.534161},
-            id: ''
-        },
-        {
-            name: "Kulinoto",
-            location: {lat: 41.865885, lng: 23.344038},
-            id: ''
-        },
-        {
-            name: "Kamenitza",
-            location: {lat: 41.768523, lng: 23.426883},
-            id: ''
+            location: {lat: 42.264257, lng: 23.2976675},
+            id: '5495b8d0498e25e66e206f64'
         },
         {
             name: "Kartala",
-            location: {lat: 42.043117, lng: 23.360738},
-            id: '51ee89e07dd2b876fb52cf2e'
+            location: {lat: 42.0327976, lng: 23.3580762},
+            id: '50e2e8bbe4b070c03ff825e9'
         }
     ],
         markers: [],
         query: '',
-        keys: require('./keys.json'), //json file containing the api keys
+        //json file containing the api keys
+        keys: require('./keys.json'),
         // globally declared the infoWindow
         infowindow: new this.props.google.maps.InfoWindow({maxWidth: 250}),
     }
@@ -71,29 +57,26 @@ export default class MapContainer extends Component {
     }
 
     mapLoad() {
-    if (this.props && this.props.google) {
-      const {google} = this.props
+        if (this.props && this.props.google) {
+            const {google} = this.props
 
-      const mapRef = this.refs.map
-      const node = ReactDOM.findDOMNode(mapRef)
+            const mapRef = this.refs.map
+            const node = ReactDOM.findDOMNode(mapRef)
 
-      const mapConfig = Object.assign({}, {
-
-        center: {lat: 41.968877, lng: 23.477193},
-        mapTypeId: 'terrain',
-        zoom: 10,
-        styles: require('./MapStyles.json')
-
-      })
-
-      this.map = new google.maps.Map(node, mapConfig)
-      this.viewMarkers()
+            const mapConfig = Object.assign({}, {
+                center: {lat: 41.968877, lng: 23.477193},
+                mapTypeId: 'terrain',
+                zoom: 9,
+                styles: require('./MapStyles.json')
+            })
+              this.map = new google.maps.Map(node, mapConfig)
+              this.viewMarkers()
         }
     }
 
     // track what the User is typyng
-    changeValue = (element) => {
-        this.setState({query: element.target.value})
+    changeValue = (e) => {
+        this.setState({query: e.target.value})
     }
 
     viewMarkers = () => {
@@ -126,7 +109,8 @@ export default class MapContainer extends Component {
                 lng: place.location.lng,
             },
             title: place.name,
-            photo: '',
+            ariaLabel: place.name,
+            tabIndex: 1,
             id: place.id,
             icon: defaultIcon,
             animation: google.maps.Animation.DROP,
@@ -150,7 +134,7 @@ export default class MapContainer extends Component {
         }))
         borders.extend(marker.position)
     });
-    this.map.fitBounds(borders)
+    // this.map.fitBounds(borders)
     }
 
     // fill the infowindow with dynamic content
@@ -167,15 +151,8 @@ export default class MapContainer extends Component {
         }, 1000);
         // if infowindow is not open on that marker
         if(infowindow.marker !== marker) {
-        //     // reset the previous marker color
+            // reset the previous marker color
             infowindow.marker = marker
-        //     if(infowindow.marker) {
-        //         const index = markers.findIndex(mark => mark.title === infowindow.marker.title)
-        //         markers[index].setIcon(defaultIcon)
-        //     }
-        //     // when the marker is clicked - change color
-        //     marker.setIcon(highlightIcon)
-
             //set the content of the info window from Foursquare API
             this.foursquareContent(marker, infowindow);
             // infowindow.setContent(`<h4>${marker.title}</h4><p>Bla bla</p>`);
@@ -194,60 +171,47 @@ export default class MapContainer extends Component {
     `client_id=${this.state.keys.ClientId}
     &client_secret=${this.state.keys.ClientSecret}` +
     `&ll=` + marker.getPosition().lat() +`,` + marker.getPosition().lng() +
-    `&v=20180527`;
+    `&v=20180801`;
 
     //fetch the request using fitch API
     fetch(request)
-    .then((response) => {
-      //check if the response was not successful
-      if (response.status !== 200) {
-        console.log('Request to foursquare was not successful!');
-        infowindow.setContent(`<strong>Error While Loading..</strong>`);
-      }
-      //otherwise successful
-      return response.json();
-    }).then((data) => {
-        if (data.response.venues){
-        //the list of venues returned by the search query.
-        var venues = data.response.venues;
-        //first venue
-        var theVenue = venues[0];
-        //properties of the first venue
-        var id = theVenue.id;
-        var name = theVenue.name;
-        var formattedAddress = '';
-
-        //construct the address from the array in formattedAddress JSON.
-        if (theVenue.location.formattedAddress) {
-          for (let line of theVenue.location.formattedAddress) {
-            formattedAddress += line + '</br>'; //new line in html to be used inside <p> element
-          }
+        .then((response) => {
+        //check if the response was not successful
+        if (response.status !== 200) {
+            console.log('Request to foursquare was not successful!');
+            infowindow.setContent(`<strong>Error While Loading..</strong>`);
         }
-        //call for photos
-        // var imgurl = data.response.venue.photos.groups[0].items[0];
+        //otherwise successful
+        return response.json();
+            }).then((data) => {
+                if (data.response.venues){
+                //the list of venues returned by the search query.
+                var venues = data.response.venues;
+                //first venue
+                var theVenue = venues[0];
+                //properties of the first venue
+                var id = theVenue.id;
+                var name = theVenue.name;
+                var formattedAddress = '';
 
-           //check for prefix and suffix property, on successful return image
-            // if ( ((imgurl.hasOwnProperty('prefix')) && (imgurl.hasOwnProperty('suffix')))) {
-            //     marker.photo = imgurl.prefix + "200x100" + imgurl.suffix;
-            // } else {
-            //     marker.photo = 'Image not found';
-            // }
+            //construct the address from the array in formattedAddress JSON.
+            if (theVenue.location.formattedAddress) {
+                for (let line of theVenue.location.formattedAddress) {
+                    formattedAddress += line + '</br>'; //new line in html to be used inside <p> element
+                }
+            }
 
         var foursquareUrl = `https://foursquare.com/v/${id}`;
 
-
-        infowindow.setContent(`<p><strong>Title: </strong>${name}</p>
-
-                <p><strong>Address: </strong>${formattedAddress}</p>
-                <a href=${foursquareUrl}>Location on Foursquare</a>
+        infowindow.setContent(`<p aria-label="Name of the ski spot"><strong>Title: </strong>${name}</p>
+                <p aria-label="Address of ${name}"><strong>Address: </strong>${formattedAddress}</p>
+                <a href=${foursquareUrl} aria-label="Location on the Foursquare site">Location on Foursquare</a>
                 `);
       }
     }).catch(exception => {
       console.log(exception);
     })
     }
-
-
 
     changeLocation = () => {
         const {infowindow} = this.state
@@ -264,45 +228,55 @@ export default class MapContainer extends Component {
     })
     }
 
-
     render() {
         const { locations, query, markers, infowindow} = this.state
             if (query) {
-            locations.forEach((loc,i) => {
+            locations.forEach((loc,ind) => {
                 // if the location contain what the user is typing
                 if(loc.name.toLowerCase().includes(query.toLowerCase())) {
                   //set visible markers
-                    markers[i].setVisible(true)
+                    markers[ind].setVisible(true)
                 }else {
-                    if (infowindow.markers === markers[i]){
+                    if (infowindow.markers === markers[ind]){
                         // if the info window was already open on the marker - close the info window
                         infowindow.close()
                     }
                     // if the location doesn't match - set the markers - not visible
-                    markers[i].setVisible(false)
+                    markers[ind].setVisible(false)
                 }
             })
             }else {
-              locations.forEach((i) => {
-                if (markers.length && markers[i]) {
-                  markers[i].setVisible(true)
+              locations.forEach((loc, ind) => {
+                if (markers.length && markers[ind]) {
+                  markers[ind].setVisible(true)
             }
         })
     }
         return (
             <div>
                 <div className="map-container">
-                    <div className="sidebar search">
-                        <input type="text"
+                    <div className="sidebar">
+                        <img src={Attribution} alt="Infowinfow content from Foursquare" className="attribution" aria-label="Foursquare is the source of the plases content"></img>
+                            <input type="text"
+                            className="search-field"
+                            aria-label="Filter ski places"
                             role="search"
+                            placeholder="Search a Ski Spot.."
                             value={this.state.value}
                             onChange={this.changeValue}
                         />
-                        <ul className="allPlaces">
-                            {markers.filter(mark => mark.getVisible()).map((mark, ind) => (
-                                <li key={ind}>{mark.title}</li>))}
+                        <ul className="allPlaces"
+                            aria-label="List of all matched ski places">
+                                {markers.filter(mark => mark.getVisible()).map((mark, ind) => (
+                                    <li
+                                        className="allPlaces-list"
+                                        tabIndex="0"
+                                        key={ind}>{mark.title}
+                                    </li>
+                                ))}
                         </ul>
                     </div>
+
                     <div className="theMap" role="application" ref="map">
                     Loading..
                     </div>
