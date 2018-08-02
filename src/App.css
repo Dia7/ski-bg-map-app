@@ -6,46 +6,159 @@ body {
   text-align: center;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
-}
-
-.App-header {
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
-  color: white;
-}
-
-.App-title {
-  font-size: 1.5em;
-}
-
-.App-intro {
-  font-size: large;
-}
-
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-.hamburger-icon {
-  width: 30px;
-  height: 30px;
-  cursor: pointer;
+.main-heading {
+  text-align: center;
+  margin-top: 20px;
 }
 
 .theMap {
   margin: 0;
-  width: 100%;
+  width: 79%;
   height: 100%;
+  display: inline-block;
+  position: relative; border: 1px solid grey; 
+  box-sizing: border-box;
 }
 
 .map-container {
   display: flex;
   flex-wrap: wrap;
   height: 700px;
-  width: 80%;
+  width: 90%;  
+  margin: 0 auto;
+  border: 1px solid grey;
+  margin-bottom: 20px;
+ 
 }
+
+.sidebar {
+  width: 20%;
+  height: 100%;
+  background-color: #2f5e6a;
+  display: inline-block;
+  color: white;
+  font-weight: bold;  
+}
+
+.allPlaces {
+  list-style-type: none;
+  padding: 10px;
+  margin: 0;
+
+}
+
+.allPlaces-list {
+  text-align: center;
+  margin-bottom: 1.5em;
+  padding-bottom: 1.5em;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 1.2em;
+  border-bottom: 1px solid white;
+  vertical-align: center;
+  cursor: pointer;
+}
+
+.allPlaces-list:last-child {
+  border-bottom: none;
+}
+
+.search-field {
+  /*font-family: 'Amatic SC', cursive;*/
+  text-transform: uppercase;
+  font-weight: bold;
+  /*letter-spacing: 1px;*/
+  padding: 10px;
+  padding-left: 5px;
+  box-sizing: border-box;
+  width: 100%;
+  margin-top: 20px;
+  border: 4px solid grey;
+}
+
+.allPlaces-list:hover {
+  color: #43CCFE;
+}
+
+/*Media Queries*/
+
+@media screen and (max-width: 500px) {
+
+  .sidebar {
+    width: 100%;    
+    font-size: 1.5em;
+    height: 80%;
+  }
+
+  .theMap {
+    width: 100%;    
+    margin-bottom: 20px;
+  }
+
+  .allPlaces-list {    
+    margin-bottom: 0.5em;
+    padding-bottom: 0.5em;
+  }
+
+  .search-field {
+    margin-top: 5%;
+  }  
+
+  .main-heading {
+    font-size: 2.2em;
+  }
+}
+
+@media screen and (min-width: 501px) {
+
+  .sidebar {
+    width: 30%;
+    font-size: 1.3em;
+    height: 100%;    
+  }
+  .allPlaces-list {    
+    margin-bottom: 0.5em;
+    padding-bottom: 0.5em;
+  }
+
+  .theMap {
+    width: 70%;
+  }
+  .main-heading {
+    font-size: 2.5em;
+  }
+
+}
+
+@media screen and (min-width: 900px) {
+
+  .sidebar {
+    width: 25%;
+    font-size: 1.3em;
+    height: 100%;    
+  }
+
+  .theMap {
+    width: 75%;
+  }
+
+  .allPlaces-list {    
+    margin-bottom: 0.7em;
+    padding-bottom: 0.7em;
+    font-size: 1em;
+  }
+
+  .main-heading {
+    font-size: 3em;
+  }
+}
+
+@media screen and (min-width: 901px) {
+
+  .map-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    margin-bottom: 20px;
+  }
+}
+
