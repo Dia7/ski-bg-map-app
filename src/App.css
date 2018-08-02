@@ -72,12 +72,19 @@ body {
   padding-left: 5px;
   box-sizing: border-box;
   width: 100%;
-  margin-top: 20px;
+  /*margin-top: 20px;*/
   border: 4px solid grey;
 }
 
 .allPlaces-list:hover {
   color: #43CCFE;
+}
+
+.attribution {  
+    width: 80%;
+    display: block;
+    margin: 0 auto;
+    margin-top: 10px;
 }
 
 /*Media Queries*/
@@ -101,12 +108,16 @@ body {
   }
 
   .search-field {
-    margin-top: 5%;
+    margin-top: 2%;
   }  
 
   .main-heading {
     font-size: 2.2em;
   }
+
+  .attribution {  
+  width: 50%;
+}
 }
 
 @media screen and (min-width: 501px) {
@@ -120,6 +131,16 @@ body {
     margin-bottom: 0.5em;
     padding-bottom: 0.5em;
   }
+
+  .search-field {
+    margin-top: 2%;
+    font-size: 0.5em;
+  }  
+
+  .attribution {  
+  width: 80%;
+  margin-bottom: 10px;
+}
 
   .theMap {
     width: 70%;
