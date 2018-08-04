@@ -22,7 +22,7 @@ window.gm_authFailure = () => {
 class App extends Component {
   render() {
     return (
-      <div>
+      <div role="heading">
         <h1 className="main-heading" tabIndex="0" autoFocus={true}>The Best Ski Spots in Bulgaria</h1>
         <MapContainer google={this.props.google} />
       </div>
