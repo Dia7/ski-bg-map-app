@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom'
 import Attribution from '../assets/attribution.png'
+import scriptLoader from 'react-async-script-loader'
 
 
 export default class MapContainer extends Component {
@@ -51,9 +52,18 @@ export default class MapContainer extends Component {
         infowindow: new this.props.google.maps.InfoWindow({maxWidth: 250}),
     }
 
+
+
+
     componentDidMount () {
         this.mapLoad()
         this.changeLocation()
+
+    }
+    // for errors while the map is loading
+    componentDidCatch(error, info) {
+            console.log(error)
+            alert("An Error Occured while loading google maps API ")
     }
 
     mapLoad() {
@@ -285,3 +295,4 @@ export default class MapContainer extends Component {
         );
     }
 }
+
