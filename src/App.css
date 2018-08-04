@@ -87,6 +87,30 @@ body {
     margin-top: 10px;
 }
 
+/*Autorization error styles*/
+.error-message {
+  font-family: 'Do Hyeon', sans-serif;
+  margin-top: 3em;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 300px;
+  color: #004C3F;
+}
+
+.error-message p {
+  font-size: 26px;
+}
+
+.red-brackets {
+  color: #b93710;
+}
+
+.error-title {
+  font-size: 46px;
+  margin-bottom: 0;
+  margin-top: 0;
+}
+
 /*Media Queries*/
 
 @media screen and (max-width: 500px) {
