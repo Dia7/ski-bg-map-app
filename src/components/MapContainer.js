@@ -66,6 +66,7 @@ export default class MapContainer extends Component {
             alert("An Error Occured while loading google maps API ")
     }
 
+
     mapLoad() {
         if (this.props && this.props.google) {
             const {google} = this.props
@@ -119,8 +120,7 @@ export default class MapContainer extends Component {
                 lng: place.location.lng,
             },
             title: place.name,
-            ariaLabel: place.name,
-            tabIndex: 1,
+            tabIndex: 0,
             id: place.id,
             icon: defaultIcon,
             animation: google.maps.Animation.DROP,
@@ -236,6 +236,12 @@ export default class MapContainer extends Component {
         displayInfowindow(element)
         }
     })
+    // adding keypress event
+    document.querySelector('.allPlaces').addEventListener('keypress', function (element) {
+      if(element.target.nodeName === "LI") {
+        displayInfowindow(element)
+        }
+    })
     }
 
     render() {
@@ -266,10 +272,9 @@ export default class MapContainer extends Component {
             <div>
                 <div className="map-container">
                     <div className="sidebar">
-                        <img src={Attribution} alt="Infowinfow content from Foursquare" className="attribution" aria-label="Foursquare is the source of the plases content"></img>
+                        <img src={Attribution} alt="Infowinfow content from Foursquare" className="attribution"></img>
                             <input type="text"
                             className="search-field"
-                            aria-label="Filter ski places"
                             role="search"
                             placeholder="Search a Ski Spot.."
                             value={this.state.value}
